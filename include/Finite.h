@@ -40,6 +40,7 @@ public:
 
     Finite &operator=(const Finite<M> &other) {
         this->value = other.value;
+        return *this;
     }
 
     explicit Finite(unsigned x) {
