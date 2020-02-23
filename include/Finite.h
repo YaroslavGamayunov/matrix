@@ -2,8 +2,8 @@
 // Created by Ярослав Гамаюнов on 2020-02-18.
 //
 
-#ifndef MATRIX_FIMITE_H
-#define MATRIX_FIMITE_H
+#ifndef MATRIX_FINITE_H
+#define MATRIX_FINITE_H
 
 #include "../src/compile_time_assert.h"
 #include "../src/num_theory_template_tricks.h"
@@ -20,6 +20,7 @@ public:
             Finite res = pow(a, n / 2);
             return res * res;
         }
+
         return pow(a, n - 1) * a;
     }
 
@@ -28,25 +29,25 @@ public:
         return pow(this, M - 2);
     }
 
-    Finite divideModulo(Finite &other) {
+    Finite divideModulo(Finite<M> &other) {
         COMPILE_ASSERT(IS_PRIME(M));
         return this * other.getInverse();
     };
 
-    Finite(const Finite &other) {
+    Finite(const Finite<M> &other) {
         this->value = other.value;
     }
 
-    Finite &operator=(const Finite &other) {
+    Finite &operator=(const Finite<M> &other) {
         this->value = other.value;
     }
 
     explicit Finite(unsigned x) {
-        this->value = x;
+        this->value = x % M;
     }
 
-    Finite &operator+=(const Finite &other) {
-        long long result = (long long) other.value + (long long) value;
+    Finite &operator+=(const Finite<M> &other) {
+        long long result = (long long) value + (long long) other.value;
         if (result >= M) {
             result -= M;
         }
@@ -54,14 +55,14 @@ public:
         return *this;
     }
 
-    Finite &operator*=(const Finite &other) {
-        long long result = ((long long) other.value + (long long) value) % M;
+    Finite &operator*=(const Finite<M> &other) {
+        long long result = ((long long) value * (long long) other.value) % M;
         value = result;
         return *this;
     }
 
-    Finite &operator-=(const Finite &other) {
-        long long result = (((long long) other.value - (long long) value) % M + M) % M;
+    Finite &operator-=(const Finite<M> &other) {
+        long long result = (((long long) value - (long long) other.value) % M + M) % M;
         value = result;
         return *this;
     }
@@ -96,4 +97,4 @@ Finite<M> operator*(const Finite<M> &a, const Finite<M> &b) {
 }
 
 
-#endif //MATRIX_FIMITE_H
+#endif //MATRIX_FINITE_H
