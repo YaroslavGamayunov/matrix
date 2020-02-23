@@ -54,11 +54,6 @@ public:
                                       modAdd(leftOperand.getValue(), rightOperand.getValue(), M));
                         }
                         case SUB: {
-                            if ((leftOperand - rightOperand).getValue() !=
-                                modSub(leftOperand.getValue(), rightOperand.getValue(), M)) {
-                                auto res = leftOperand - rightOperand;
-                                std::cout << "djfjf";
-                            }
                             ASSERT_EQ((leftOperand - rightOperand).getValue(),
                                       modSub(leftOperand.getValue(), rightOperand.getValue(), M));
                         }
