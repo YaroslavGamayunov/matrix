@@ -38,7 +38,8 @@ struct HasNonTrivialDivisors {
 template<unsigned N>
 struct IsPrime {
     enum {
-        value = TernaryOperator<(N < 2), BooleanValue<false>, HasNonTrivialDivisors<N, 2>>::value
+        value = TernaryOperator<(N < 2), BooleanValue<false>,
+                TernaryOperator<(N == 2), BooleanValue<true>, HasNonTrivialDivisors<N, 2>>>::value
     };
 };
 

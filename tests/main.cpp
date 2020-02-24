@@ -5,6 +5,7 @@
 #include "../src/num_theory_template_tricks.h"
 #include "../include/Finite.h"
 #include "FiniteTestFixture.h"
+#include "../include/Matrix.h"
 
 
 TEST_F(FiniteTestFixture, FiniteTest_Power_Test) {

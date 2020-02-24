@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(matrix)
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=12857")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=50000")
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
@@ -36,5 +36,5 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include")
 endif ()
 
-add_executable(matrix tests/main.cpp include/Rational.h include/Finite.h include/BigInteger.h tests/FiniteTestFixture.h src/num_theory_template_tricks.h src/math_utils.h)
+add_executable(matrix tests/main.cpp include/Rational.h include/Finite.h include/BigInteger.h tests/FiniteTestFixture.h src/num_theory_template_tricks.h src/math_utils.h include/Matrix.h src/Field.h)
 target_link_libraries(matrix gtest_main)
