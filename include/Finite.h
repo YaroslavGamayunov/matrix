@@ -7,10 +7,9 @@
 
 #include "../src/compile_time_assert.h"
 #include "../src/num_theory_template_tricks.h"
-#include "../src/Field.h"
 
 template<unsigned M>
-class Finite : public Field {
+class Finite {
 public:
     static Finite pow(const Finite &a, unsigned n) {
         if (n == 0) {
@@ -27,7 +26,7 @@ public:
 
     Finite divideModulo(Finite<M> &other) {
         COMPILE_ASSERT(IS_PRIME(M));
-        return this * other.getInverse();
+        return (*this) * other.getMulInverse();
     }
 
     Finite(const Finite<M> &other) {
@@ -64,21 +63,9 @@ public:
         return *this;
     }
 
-    Field &getZero() override {
-        return *(new Finite<M>(0));
-    }
-
-    Field &getOne() override {
-        return *(new Finite<M>(1));
-    }
-
-    Field &getAddInverse() override {
-        return *(new Finite<M>(M - value));
-    }
-
-    Field &getMulInverse() override {
-        COMPILE_ASSERT(IS_PRIME(M));
-        return *(new Finite(pow(*this, M - 2)));
+    Finite getMulInverse() {
+        COMPILE_ASSERT(IS_PRIME(M))
+        return pow(*this, M - 2);
     }
 
     unsigned getValue() {

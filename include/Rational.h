@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "BigInteger.h"
 
-class Rational : public Field {
+class Rational {
 private:
     BigInteger numerator;
     BigInteger denominator;
@@ -156,14 +156,6 @@ public:
     friend bool operator<=(const Rational &a, const Rational &b);
 
     friend bool operator>=(const Rational &a, const Rational &b);
-
-    Field &getZero() override;
-
-    Field &getOne() override;
-
-    Field &getAddInverse() override;
-
-    Field &getMulInverse() override;
 };
 
 bool operator==(const Rational &a, const Rational &b) {
@@ -216,24 +208,6 @@ Rational operator/(const Rational &a, const Rational &b) {
     Rational res = a;
     res /= b;
     return res;
-}
-
-Field &Rational::getZero() {
-    return *(new Rational(0));
-}
-
-Field &Rational::getOne() {
-    return *(new Rational(1));
-}
-
-Field &Rational::getAddInverse() {
-    Rational *res = new Rational((*this) * (-1));
-    return *res;
-}
-
-Field &Rational::getMulInverse() {
-    Rational *res = new Rational(Rational(1) / (*this));
-    return *res;
 }
 
 #endif //MATRIX_RATIONAL_H
