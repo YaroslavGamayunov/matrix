@@ -9,26 +9,10 @@
 #include "BigInteger.h"
 
 class Rational {
-private:
-    BigInteger numerator;
-    BigInteger denominator;
-
-    void reduce() {
-        BigInteger a = abs(numerator);
-        BigInteger b = abs(denominator);
-        while (b > 0) {
-            a %= b;
-            std::swap(a, b);
-        }
-        numerator /= a;
-        denominator /= a;
-        if (denominator < 0) {
-            numerator *= -1;
-            denominator *= -1;
-        }
-    }
-
 public:
+    const static Rational ZERO;
+    const static Rational ONE;
+
     Rational() : numerator(0), denominator(1) {}
 
     Rational(const Rational &q) = default;
@@ -156,6 +140,27 @@ public:
     friend bool operator<=(const Rational &a, const Rational &b);
 
     friend bool operator>=(const Rational &a, const Rational &b);
+
+private:
+
+    BigInteger numerator;
+    BigInteger denominator;
+
+    void reduce() {
+        BigInteger a = abs(numerator);
+        BigInteger b = abs(denominator);
+        while (b > 0) {
+            a %= b;
+            std::swap(a, b);
+        }
+        numerator /= a;
+        denominator /= a;
+        if (denominator < 0) {
+            numerator *= -1;
+            denominator *= -1;
+        }
+    }
+
 };
 
 bool operator==(const Rational &a, const Rational &b) {
@@ -209,5 +214,9 @@ Rational operator/(const Rational &a, const Rational &b) {
     res /= b;
     return res;
 }
+
+const Rational Rational::ZERO = Rational(0);
+const Rational Rational::ONE = Rational(1);
+
 
 #endif //MATRIX_RATIONAL_H

@@ -11,6 +11,9 @@
 template<unsigned M>
 class Finite {
 public:
+    const static Finite ZERO;
+    const static Finite ONE;
+
     static Finite pow(const Finite &a, unsigned n) {
         if (n == 0) {
             return Finite(1);
@@ -24,6 +27,11 @@ public:
         return pow(a, n - 1) * a;
     }
 
+    Finite getMulInverse() {
+        COMPILE_ASSERT(IS_PRIME(M))
+        return pow(*this, M - 2);
+    }
+
     Finite divideModulo(Finite<M> &other) {
         COMPILE_ASSERT(IS_PRIME(M));
         return (*this) * other.getMulInverse();
@@ -33,14 +41,20 @@ public:
         this->value = other.value;
     }
 
+    explicit Finite(unsigned x) {
+        this->value = x % M;
+    }
+
+    Finite() {
+        this->value = 0;
+    }
+
+
     Finite &operator=(const Finite<M> &other) {
         this->value = other.value;
         return *this;
     }
 
-    explicit Finite(unsigned x) {
-        this->value = x % M;
-    }
 
     Finite &operator+=(const Finite<M> &other) {
         long long result = (long long) value + (long long) other.value;
@@ -63,17 +77,12 @@ public:
         return *this;
     }
 
-    Finite getMulInverse() {
-        COMPILE_ASSERT(IS_PRIME(M))
-        return pow(*this, M - 2);
-    }
-
-    unsigned getValue() {
+    unsigned getValue() const {
         return value;
     }
 
 private:
-    unsigned value;
+    unsigned value = 0;
 };
 
 template<unsigned M>
@@ -97,5 +106,10 @@ Finite<M> operator*(const Finite<M> &a, const Finite<M> &b) {
     return result;
 }
 
+template<unsigned M>
+const Finite<M> Finite<M>::ZERO = Finite<M>(0);
+
+template<unsigned M>
+const Finite<M> Finite<M>::ONE = Finite<M>(1);
 
 #endif //MATRIX_FINITE_H
