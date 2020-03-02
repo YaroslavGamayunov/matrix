@@ -82,4 +82,88 @@ unsigned modSub(long long a, long long b, long long m) {
     return res;
 }
 
+template<typename T>
+std::vector<T> operator*(const std::vector<T> &a, T b) {
+    std::vector<T> res = a;
+    for (int i = 0; i < res.size(); i++) {
+        res[i] = res[i] * b;
+    }
+    return res;
+}
+
+template<typename T>
+std::vector<T> operator+(const std::vector<T> &a, const std::vector<T> &b) {
+    // todo add exceptions
+    std::vector<T> res = a;
+    for (int i = 0; i < res.size(); i++) {
+        res[i] = a[i] + b[i];
+    }
+    return res;
+}
+
+template<typename T>
+std::vector<T> operator-(const std::vector<T> &a, const std::vector<T> &b) {
+    // todo add exceptions
+    std::vector<T> res = a;
+    for (int i = 0; i < res.size(); i++) {
+        res[i] = a[i] - b[i];
+    }
+    return res;
+}
+
+template<typename Field>
+std::vector<std::vector<Field>> echelonForm(std::vector<std::vector<Field>> matrixRows, bool keepZeroRows = true) {
+    unsigned nRows = matrixRows.size();
+    unsigned nColumns = matrixRows[0].size();
+    int lastProcessedRow = -1;
+
+    for (unsigned column = 0; column < nColumns; column++) {
+        int nonZeroPos = -1; // A position in j-th column with non-zero value
+
+        for (unsigned row = lastProcessedRow + 1; row < nRows; row++) {
+            if (matrixRows[row][column] != Field::ZERO) {
+                nonZeroPos = row;
+                break;
+            }
+        }
+
+        if (nonZeroPos == -1) {
+            continue;
+        }
+
+        lastProcessedRow++;
+
+        std::swap(matrixRows[lastProcessedRow], matrixRows[nonZeroPos]);
+
+        for (int row = 0; row < nRows; row++) {
+            if (row == lastProcessedRow) {
+                continue;
+            }
+
+            Field ratio = (matrixRows[row][column] / matrixRows[lastProcessedRow][column]);
+            matrixRows[row] =
+                    matrixRows[row] - matrixRows[lastProcessedRow] * ratio;
+        }
+
+//        std::cout << "\n---------\n\n\n\n\n";
+//        for (int i = 0; i < nRows; i++) {
+//            for (int j = 0; j < nColumns; j++) {
+//                std::cout << matrixRows[i][j].toString() << "  ";
+//            }
+//            std::cout << "\n";
+//
+//        }
+//        std::cout << "\n----------\n\n\n\n\n";
+    }
+
+    if (!keepZeroRows) {
+        const std::vector<Field> ZERO_ROW(nColumns, Field::ZERO);
+        while (!matrixRows.empty() && matrixRows.back() == ZERO_ROW) {
+            matrixRows.pop_back();
+        }
+    }
+
+    return matrixRows;
+}
+
 #endif //MATRIX_MATH_UTILS_H

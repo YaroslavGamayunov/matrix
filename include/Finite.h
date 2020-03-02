@@ -28,7 +28,7 @@ public:
     }
 
     Finite getMulInverse() {
-        COMPILE_ASSERT(IS_PRIME(M))
+        COMPILE_ASSERT(IS_PRIME(M));
         return pow(*this, M - 2);
     }
 

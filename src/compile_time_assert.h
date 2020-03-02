@@ -17,5 +17,5 @@ struct compileTimeAssert<true> {
     static void apply() {}
 };
 
-#define COMPILE_ASSERT(expr) compileTimeAssert<expr>::apply();
+#define COMPILE_ASSERT(expr) compileTimeAssert<expr>::apply()
 #endif //MATRIX_STATIC_ASSERT_H
