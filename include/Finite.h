@@ -42,13 +42,16 @@ public:
     }
 
     explicit Finite(unsigned x) {
-        this->value = x % M;
+        this->value = ((x % M) + M) % M;
     }
 
     Finite() {
         this->value = 0;
     }
 
+    Finite operator-() {
+        return Finite(0) - *this;
+    }
 
     Finite &operator=(const Finite<M> &other) {
         this->value = other.value;
@@ -75,6 +78,10 @@ public:
         long long result = (((long long) value - (long long) other.value) % M + M) % M;
         value = result;
         return *this;
+    }
+
+    bool operator==(const Finite<M> &other) {
+        return value == other.value;
     }
 
     unsigned getValue() const {

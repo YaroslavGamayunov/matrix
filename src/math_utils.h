@@ -6,6 +6,7 @@
 #define MATRIX_MATH_UTILS_H
 
 #include <vector>
+#include "matrix_operations/matrix_operations.h"
 
 bool isPrime(unsigned n) {
     if (n < 2) {
@@ -111,8 +112,10 @@ std::vector<T> operator-(const std::vector<T> &a, const std::vector<T> &b) {
     return res;
 }
 
-template<typename Field>
-std::vector<std::vector<Field>> echelonForm(std::vector<std::vector<Field>> matrixRows, bool keepZeroRows = true) {
+template<unsigned M, unsigned N, typename Field>
+std::vector<std::vector<Field>> echelonForm(std::vector<std::vector<Field>> matrixRows,
+                                            bool keepZeroRows = true,
+                                            std::vector<std::shared_ptr<MatrixOperation<M, N, Field>>> *operationLog = nullptr) {
     unsigned nRows = matrixRows.size();
     unsigned nColumns = matrixRows[0].size();
     int lastProcessedRow = -1;
@@ -134,30 +137,55 @@ std::vector<std::vector<Field>> echelonForm(std::vector<std::vector<Field>> matr
         lastProcessedRow++;
 
         std::swap(matrixRows[lastProcessedRow], matrixRows[nonZeroPos]);
+        if (operationLog != nullptr) {
+            operationLog->push_back(
+                    std::shared_ptr<MatrixOperation<M, N, Field>>(
+                            new MatrixSwapRowsOperation<M, N, Field>(lastProcessedRow, nonZeroPos)));
+        }
 
-        for (int row = 0; row < nRows; row++) {
+        for (unsigned row = 0; row < nRows; row++) {
             if (row == lastProcessedRow) {
                 continue;
             }
 
             Field ratio = (matrixRows[row][column] / matrixRows[lastProcessedRow][column]);
+
             matrixRows[row] =
                     matrixRows[row] - matrixRows[lastProcessedRow] * ratio;
+            if (operationLog != nullptr) {
+                operationLog->push_back(std::shared_ptr<MatrixOperation<M, N, Field>>(
+                        new MatrixAddRowOperation<M, N, Field>(row, lastProcessedRow, -ratio)));
+            }
         }
+    }
 
-//        std::cout << "\n---------\n\n\n\n\n";
-//        for (int i = 0; i < nRows; i++) {
-//            for (int j = 0; j < nColumns; j++) {
-//                std::cout << matrixRows[i][j].toString() << "  ";
-//            }
-//            std::cout << "\n";
-//
-//        }
-//        std::cout << "\n----------\n\n\n\n\n";
+    const std::vector<Field> ZERO_ROW(nColumns, Field::ZERO);
+
+    if (N == M && matrixRows.back() != ZERO_ROW) {
+
+        /*
+         * If matrix is square and its rank is N, echelon form is diagonal matrix,
+         * that's why we multiply rows by scalar value so that each element become ONE
+         */
+
+        for (unsigned row = 0; row < nRows; row++) {
+            for (unsigned column = 0; column < nColumns; column++) {
+                if (matrixRows[row][column] != Field::ZERO) {
+                    Field ratio = Field::ONE / matrixRows[row][column];
+                    // TODO Do something to division operator
+
+                    matrixRows[row] = matrixRows[row] * ratio;
+
+                    if (operationLog != nullptr) {
+                        operationLog->push_back(std::shared_ptr<MatrixOperation<M, N, Field>>(
+                                new MatrixMultiplyRowOperation<M, N, Field>(row, ratio)));
+                    }
+                }
+            }
+        }
     }
 
     if (!keepZeroRows) {
-        const std::vector<Field> ZERO_ROW(nColumns, Field::ZERO);
         while (!matrixRows.empty() && matrixRows.back() == ZERO_ROW) {
             matrixRows.pop_back();
         }

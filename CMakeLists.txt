@@ -36,5 +36,5 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include")
 endif ()
 
-add_executable(matrix tests/main.cpp include/Rational.h include/Finite.h include/BigInteger.h tests/FiniteTestFixture.h src/num_theory_template_tricks.h src/math_utils.h include/Matrix.h)
+add_executable(matrix tests/main.cpp include/Rational.h include/Finite.h include/BigInteger.h tests/FiniteTestFixture.h src/num_theory_template_tricks.h src/math_utils.h include/Matrix.h src/matrix_operations/matrix_operations.h src/exceptions/matrix_exceptions.h)
 target_link_libraries(matrix gtest_main)
