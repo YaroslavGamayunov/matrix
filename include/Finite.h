@@ -27,14 +27,9 @@ public:
         return pow(a, n - 1) * a;
     }
 
-    Finite getMulInverse() {
+    Finite getMulInverse() const {
         COMPILE_ASSERT(IS_PRIME(M));
         return pow(*this, M - 2);
-    }
-
-    Finite divideModulo(Finite<M> &other) {
-        COMPILE_ASSERT(IS_PRIME(M));
-        return (*this) * other.getMulInverse();
     }
 
     Finite(const Finite<M> &other) {
@@ -47,6 +42,12 @@ public:
 
     Finite() {
         this->value = 0;
+    }
+
+    Finite &operator/=(const Finite<M> &other) {
+        COMPILE_ASSERT(IS_PRIME(M));
+        *this = *this * other.getMulInverse();
+        return *this;
     }
 
     Finite operator-() {
@@ -80,8 +81,12 @@ public:
         return *this;
     }
 
-    bool operator==(const Finite<M> &other) {
+    bool operator==(const Finite<M> &other) const {
         return value == other.value;
+    }
+
+    bool operator!=(const Finite<M> &other) {
+        return value != other.value;
     }
 
     unsigned getValue() const {
@@ -110,6 +115,13 @@ template<unsigned M>
 Finite<M> operator*(const Finite<M> &a, const Finite<M> &b) {
     Finite<M> result = a;
     result *= b;
+    return result;
+}
+
+template<unsigned M>
+Finite<M> operator/(const Finite<M> &a, const Finite<M> &b) {
+    Finite<M> result = a;
+    result /= b;
     return result;
 }
 

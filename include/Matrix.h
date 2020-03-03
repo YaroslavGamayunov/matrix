@@ -35,13 +35,13 @@ public:
 
     Matrix<N, M, Field> inverted() {
         COMPILE_ASSERT(N == M);
-        if (det() == 0) {
+        if (det() == Field::ZERO) {
             throw DegenerateMatrixException();
         }
         std::vector<std::shared_ptr<MatrixOperation<M, N, Field>>> operationLog;
         echelonForm<M, N, Field>(rows, true, &operationLog);
 
-        Matrix<N, N> identityMatrix;
+        Matrix<N, N, Field> identityMatrix;
         for (unsigned i = 0; i < N; i++) {
             identityMatrix[i][i] = Field::ONE;
         }
@@ -54,7 +54,7 @@ public:
 
     void invert() {
         COMPILE_ASSERT(N == M);
-        if (det() == 0) {
+        if (det() == Field::ZERO) {
             throw DegenerateMatrixException();
         }
         *this = inverted();
