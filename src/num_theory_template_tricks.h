@@ -7,16 +7,12 @@
 
 template<bool EXPR, typename T, typename F>
 struct TernaryOperator {
-    enum {
-        value = T::value
-    };
+    static const auto value = T::value;
 };
 
 template<typename T, typename F>
 struct TernaryOperator<false, T, F> {
-    enum {
-        value = F::value
-    };
+    static const auto value = F::value;
 };
 
 template<bool V>
@@ -24,6 +20,11 @@ struct BooleanValue {
     enum {
         value = V
     };
+};
+
+template<int V>
+struct IntValue {
+    static const auto value = V;
 };
 
 template<unsigned N, unsigned M>
@@ -43,6 +44,17 @@ struct IsPrime {
     };
 };
 
+// finds first 2^k >= N
+/*
+ * Note: this template can exceed max template instantiation limit,
+ * but I hope users will not need to create 50'000 x 50'000 matrices :)
+ */
+template<int N>
+struct NextPowerOfTwo {
+    static const int value = TernaryOperator<((N & (N - 1)) == 0), IntValue<N>, NextPowerOfTwo<N + 1>>::value;
+};
+
 #define IS_PRIME(N) IsPrime<N>::value
+#define NEXT_POWER_OF_TWO(N) NextPowerOfTwo<N>::value
 
 #endif //MATRIX_NUM_THEORY_TEMPLATE_TRICKS_H

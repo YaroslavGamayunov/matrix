@@ -121,7 +121,7 @@ std::vector<std::vector<Field>> echelonForm(std::vector<std::vector<Field>> matr
     int lastProcessedRow = -1;
 
     for (unsigned column = 0; column < nColumns; column++) {
-        int nonZeroPos = -1; // A position in j-th column with non-zero value
+        int nonZeroPos = -1; // A position in current column with non-zero value
 
         for (unsigned row = lastProcessedRow + 1; row < nRows; row++) {
             if (matrixRows[row][column] != Field::ZERO) {
